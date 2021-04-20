@@ -1,20 +1,16 @@
-import os
-from shutil import copyfile
-import datetime
+from src.config import config
 from src.utils.logger import Logger
-
-input_dir = r'D:\data\download\导出的条目\files'
-output_dir = r'D:\data\download\output{}'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
-
-if not os.path.exists(output_dir):
-    os.mkdir(output_dir)
+from src.file_operation_base import FileOperationBase
 
 
 def main():
     Logger.get_shared_logger().info('main invoked')
-    for sub_folder_name in os.listdir(input_dir):
-        for file in os.listdir(os.path.join(input_dir, sub_folder_name)):
-            copyfile(os.path.join(input_dir, sub_folder_name, file), os.path.join(output_dir, file))
+    Logger.get_shared_logger().info(config)
+    operator = FileOperationBase(config["src"], config["des"], config["chunk_size"])
+    if config["split"]:
+        operator.split_file()
+    else:
+        operator.merge_file()
 
 
 # Press the green button in the gutter to run the script.
